@@ -30,12 +30,12 @@ public class CartPageTest {
         driver = new ChromeDriver();
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.get("https://www.saucedemo.com");
-
         loginPage = new LoginPage(driver);
         productsPage = new product_page(driver);
         loginPage.login("standard_user", "secret_sauce");
         cartPage = new CartPage(driver);
         pageBase = new PageBase(driver);
+        pageBase.waitForUrlToContain("inventory");
     }
 
     // 1-Check Product Details
@@ -46,30 +46,55 @@ public class CartPageTest {
         cartPage.WaitcartPageToBeVisible();
         Assert.assertTrue(cartPage.verifyProductInCart("Sauce Labs Backpack", "$29.99"), "Product details are incorrect");
     }
-
-    // 2-Verify cart keeps product after navigation
+     //2-Check Continue Button
+@Test
+public void CheckContinueButtonInCartPage() {
+    cartPage.OpenCart();
+    cartPage.WaitcartPageToBeVisible();
+    cartPage.clickContinueshopping();
+    cartPage.WaitProductPageToBeVisible();
+    String actualPage = driver.getCurrentUrl();
+    String expectedPage = "https://www.saucedemo.com/inventory.html";
+    Assert.assertEquals(actualPage, expectedPage, "Continue Button is working incorrectly");
+}
+    // 3-Verify cart keeps product after navigation
     @Test
     public void CartKeepsElement() {
         productsPage.addBackpackToCart();
         cartPage.goToCart();
         cartPage.WaitcartPageToBeVisible();
-
-        driver.navigate().back();
-        driver.navigate().forward();
-
-
-        new WebDriverWait(driver, Duration.ofSeconds(30))
-                .until(ExpectedConditions.jsReturnsValue("return document.readyState=='complete';"));
-
-
+        cartPage.clickContinueshopping();
+        pageBase.waitForUrlToContain("inventory");
+        cartPage.goToCart();
+        cartPage.WaitcartPageToBeVisible();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("cart_contents_container")));
-
         String expectedName = "Sauce Labs Backpack";
-        Assert.assertEquals(cartPage.getProductNameInCart(), expectedName, "Product should remain in cart after back and forward navigation");
+        Assert.assertEquals(cartPage.getProductNameInCart(), expectedName, "Product should remain in cart after continuing shopping");
     }
 
-
-
+/* 4-Check The Title */
+    @Test
+    public void CheckTitle()
+    {
+        cartPage.goToCart();
+        cartPage.WaitcartPageToBeVisible();
+        By cartTitleLocator = By.className("title");
+        String ActualTitle=driver.findElement(cartTitleLocator).getText();
+        String expectedTitle = "Your Cart";
+        Assert.assertEquals(ActualTitle, expectedTitle, "Cart page title is incorrect");
+    }
+/*5-Check Checkout Button */
+    @Test
+    public void Check_CheckoutButton()
+    {
+        cartPage.goToCart();
+        cartPage.WaitcartPageToBeVisible();
+        cartPage.clickCheckoutButton();
+        pageBase.waitForUrlToContain("checkout-step-one");
+        String actualPage = driver.getCurrentUrl();
+        String expectedPage = "https://www.saucedemo.com/checkout-step-one.html";
+        Assert.assertEquals(actualPage, expectedPage, "Checkout Button is working incorrectly");
+    }
 
 
 

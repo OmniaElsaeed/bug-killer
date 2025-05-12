@@ -16,27 +16,20 @@ public class CartPage extends PageBase {
     private By removeButton = By.className("cart_button");
     private By productPageLocator = By.id("contents_wrapper");
     private By cartpagelocator = By.id("page_wrapper");
+    private By checkoutButton = By.id("checkout");
+
     private By continueshoppinglocator = By.id("continue-shopping");
 
     public CartPage(WebDriver driver) {
         super(driver);
     }
 
-    public int getCartItemCount() {
-        String itemCountText = this.driver.findElement(this.cartItemCount).getText();
-        return Integer.parseInt(itemCountText);
-    }
-
-    public boolean isCartIconShowingCorrectItemCount(int expectedCount) {
-        return this.getCartItemCount() == expectedCount;
-    }
-
     public String getProductNameInCart() {
-        return this.driver.findElement(this.productNameInCart).getText();
+       return driver.findElement(productNameInCart).getText();
     }
 
     public String getProductPriceInCart() {
-        return this.driver.findElement(this.productPriceInCart).getText();
+        return driver.findElement(productPriceInCart).getText();
     }
 
     public boolean verifyProductInCart(String expectedProductName, String expectedProductPrice) {
@@ -55,23 +48,22 @@ public class CartPage extends PageBase {
         waitForElementVisibility(By.id("cart_contents_container"));
     }
 
+
     public void goToCart() {
         this.clickOnElement(this.cartIcon);
     }
 
     public void clickContinueshopping() {
-        this.waitForElementToBeClickable(this.continueshoppinglocator);
-        this.clickOnElement(this.continueshoppinglocator);
+        waitForElementToBeClickable(continueshoppinglocator);
+        clickOnElement(continueshoppinglocator);
     }
-    public boolean isCartBadgeDisplayed() {
-        return driver.findElements(cartItemCount).size() > 0;
-    }
+
 
     public void OpenCart() {
         this.clickOnElement(By.className("shopping_cart_link"));
     }
     public void clickCheckoutButton() {
-        By checkoutButton = By.id("checkout");
+
         waitForElementToBeClickable(checkoutButton);
         clickOnElement(checkoutButton);
     }
