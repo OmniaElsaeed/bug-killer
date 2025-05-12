@@ -71,6 +71,9 @@ public class product_page extends PageBase {
     public void addBikeLightToCart() {
         driver.findElement(addToCartBikeLight).click();
     }
+    public void openCartIcon() {
+        driver.findElement(By.className("shopping_cart_link")).click();
+    }
 
 
     public String getCartItemCount() {

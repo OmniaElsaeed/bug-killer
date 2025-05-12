@@ -2,6 +2,11 @@ package Pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 public class CheckoutPage extends PageBase {
 
@@ -52,6 +57,12 @@ public class CheckoutPage extends PageBase {
         clickOnElement(cancelButton);
     }
 
+    public String getErrorMessage() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        By errorLocator = By.cssSelector("h3[data-test='error']");
+        WebElement errorElement = wait.until(ExpectedConditions.visibilityOfElementLocated(errorLocator));
+        return errorElement.getText();
+    }
 
     public String geterrormessage()
     {

@@ -26,7 +26,7 @@ public class ProductTests {
 
 
     }
-/*Test the Title*/
+/*1-Test the Title*/
 @Test
 public void testProductPageTitle() {
     product_page productPage = new product_page(driver);
@@ -34,8 +34,7 @@ public void testProductPageTitle() {
     System.out.println("Actual Title: " + actualTitle);
     Assert.assertEquals(actualTitle, "Products", "Product page title does not match.");
 }
-
-    /* Test product List */
+    /*2- Test product List */
     @Test
     public void testProductListDisplayed() {
         product_page productPage = new product_page(driver);
@@ -43,8 +42,7 @@ public void testProductPageTitle() {
         Assert.assertTrue(productCount > 0, "No products are displayed");
         System.out.println("Number of products displayed: " + productCount);
     }
-
-    /* Add Product to cart */
+    /* 3-Add Product to cart */
     @Test
     public void testAddProductToCart() {
         product_page productPage = new product_page(driver);
@@ -56,7 +54,7 @@ public void testProductPageTitle() {
 
         System.out.println("Product added to cart successfully. Cart count: " + cartBadgeCount);
     }
-/*Test remove from cart */
+/*4-Test remove from cart */
     @Test
     public void RemoveProduct()
     {

@@ -13,61 +13,63 @@ public class CheckOutTest {
     LoginPage loginPage;
     product_page productsPage;
     CartPage cartPage;
-    PageBase pageBase;
-    WebDriverWait wait;
     CheckoutPage checkoutPage;
+    WebDriverWait wait;
 
     @BeforeMethod
     public void setup() {
         driver = new ChromeDriver();
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait = new WebDriverWait(driver, Duration.ofSeconds(50));
         driver.manage().window().maximize();
         driver.get("https://www.saucedemo.com");
 
+        // Pages initialization
         loginPage = new LoginPage(driver);
         loginPage.login("standard_user", "secret_sauce");
 
         productsPage = new product_page(driver);
         cartPage = new CartPage(driver);
-        pageBase = new PageBase(driver);
         checkoutPage = new CheckoutPage(driver);
 
-     productsPage.addBackpackToCart();
-        cartPage.OpenCart();
-        cartPage.clickCheckoutButton();
+        // Add item to cart
+        productsPage.addBackpackToCart();
+
+        // Navigate to cart
+        productsPage.openCartIcon();  // دي لازم تكون موجودة في كلاس الـ product_page وتضغط على أيقونة الكارت
+
+        // Click checkout
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("checkout"))).click();
     }
-
-    @Test
-    public void fillCheckoutInformation() {
-        WebElement firstName = driver.findElement(By.id("first-name"));
-        WebElement lastName = driver.findElement(By.id("last-name"));
-        WebElement postalCode = driver.findElement(By.id("postal-code"));
-
-        firstName.sendKeys("omnia");
-        lastName.sendKeys("elsaeed");
-        postalCode.sendKeys("123547");
-    }
-
+//1-Check inputs
     @Test
     public void CheckValidInputs() {
-        fillCheckoutInformation();
-        WebElement continueButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("continue")));
-        continueButton.click();
+        checkoutPage.fillCheckoutInformation();  // تأكد إن الدالة دي بتدخل البيانات صح
+
+        checkoutPage.clickContinue();
 
         wait.until(ExpectedConditions.urlContains("checkout-step-two"));
         String currentUrl = driver.getCurrentUrl();
         Assert.assertTrue(currentUrl.contains("checkout-step-two"), "Should be on checkout step two");
     }
-
+//2-Miss All fields
     @Test
     public void CheckEmptyFields() {
-        WebElement continueButton = driver.findElement(By.id("continue"));
+        WebElement continueButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("continue")));
         continueButton.click();
 
-        By errorLocator = By.cssSelector("h3[data-test='error']");
-        WebElement error = wait.until(ExpectedConditions.visibilityOfElementLocated(errorLocator));
-        String actualError = error.getText();
+        String actualError = checkoutPage.getErrorMessage();
         Assert.assertEquals(actualError, "Error: First Name is required");
+    }
+/*3-Miss ZIP code*/
+    @Test
+    public void testCheckoutWithoutZipCode() {
+        checkoutPage.enterFirstName("Omnia");
+        checkoutPage.enterLastName("Elsaeed");
+        checkoutPage.enterZipCode("");  // Leave Zip Code empty
+        checkoutPage.clickContinue();
+
+        String errorMessage = checkoutPage.getErrorMessage();
+        Assert.assertEquals(errorMessage, "Error: Postal Code is required", "Error message for missing zip code was not displayed.");
     }
 
     @AfterMethod

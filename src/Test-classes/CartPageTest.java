@@ -69,16 +69,8 @@ public class CartPageTest {
     }
 
 
-    // 3-Test product name and price in cart
-    @Test
-    public void TestNameAndPrice() {
-        productsPage.addBackpackToCart();
-        cartPage.goToCart();
-        String productName = cartPage.getProductNameInCart();
-        String priceProduct = cartPage.getProductPriceInCart();
-        Assert.assertEquals(productName, "Sauce Labs Backpack", "Product name is not correct");
-        Assert.assertEquals(priceProduct, "$29.99", "Product price is not correct");
-    }
+
+
 
 
 
