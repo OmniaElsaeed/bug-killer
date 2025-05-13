@@ -16,13 +16,14 @@ public class ProductTests {
     WebDriver driver;
     @BeforeMethod
     public void setup() {
-        // تهيئة الـ WebDriver قبل كل اختبار
+      
         driver = new ChromeDriver();
         driver.get("https://www.saucedemo.com/");
         LoginPage loginPage = new LoginPage(driver);
         loginPage.login("standard_user", "secret_sauce");
         PageBase pageBase=new PageBase(driver);
         pageBase.waitForElementVisibility(By.className("title"));
+        product_page productPage = new product_page(driver);
 
 
     }
@@ -37,7 +38,7 @@ public void testProductPageTitle() {
     /*2- Test product List */
     @Test
     public void testProductListDisplayed() {
-        product_page productPage = new product_page(driver);
+      
         int productCount = productPage.getProductCount();
         Assert.assertTrue(productCount > 0, "No products are displayed");
         System.out.println("Number of products displayed: " + productCount);
@@ -45,7 +46,7 @@ public void testProductPageTitle() {
     /* 3-Add Product to cart */
     @Test
     public void testAddProductToCart() {
-        product_page productPage = new product_page(driver);
+        
 
         productPage.addToCartByIndex(0);
         productPage.waitCartBadge();
@@ -58,7 +59,7 @@ public void testProductPageTitle() {
     @Test
     public void RemoveProduct()
     {
-        product_page productPage = new product_page(driver);
+        
         PageBase pageBase=new PageBase(driver);
         productPage.addBackpackToCart();
         productPage.addBacklightToCart();
